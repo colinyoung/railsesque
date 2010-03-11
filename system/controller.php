@@ -23,8 +23,15 @@ class Controller extends Template {
 	  require_once($path);
 	}
 	
-	function flash_insert($type, $message) {
+	function flash_insert($type, $message, $array = "") {
 	  $_SESSION["flash"] = "$type: $message";
+	  if (is_array($array)) {
+	    $_SESSION["flash"] .= "<ul class=\"list $type\">";
+	    foreach($array as $message) {
+	      $_SESSION["flash"] .= "<li>$message</li>";
+	    }
+	    $_SESSION["flash"] .= "</ul>";
+	  }
 	}
 	
 	function redirect_to($route) {

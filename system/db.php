@@ -20,6 +20,11 @@ class DB extends Config {
 	  }
 	  $this->constructed = true;
 	  $this->validations = array();
+	  
+	  // extend the preset regexes (for validates_format_of) here.
+	  $this->defaultRegexes = array(
+	    ":email" => '/^[^\W][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$/'
+	  );
 	}
 	
 	function connect() {
@@ -87,22 +92,28 @@ class DB extends Config {
           $params[$row["Field"]] = $this->$row["Field"]; 
         }
 		  }
+
 		  
     }
-	  // validate (returns array of failures if failed.)
-	  
+	  // validate (returns array of failures if failed.)	  
 	  $failures = $this->validate($params);
 	  if (count($failures) == 0) {
-	    $this->query(
-    	  $this->sql(
+      $this->query(
+    	  $sql = $this->sql(
     	    "INSERT INTO",
     	    $this->table_name,
     	    "(", $this->column_names_list(), ")",
     	    "VALUES (", $this->sql_insert_list($params), ")"
     	  )
     	);
-	    $this->closeConnection();
-    	return true;
+    	if (mysql_affected_rows() == 1) {
+  	    $this->closeConnection();
+      	return true;    	  
+    	} else {
+    	  $this->errors = array(mysql_error(), "query was:" . $sql);
+    	  return false;
+    	}
+    	
 	  } else {
 	    $this->closeConnection();
 	    $this->errors = $failures;
@@ -126,6 +137,7 @@ class DB extends Config {
 	    - format_of
 	    - inclusion_of
 	  */
+	  
 	  // presence_of
     if (array_key_exists("presence_of", $model->validations))	{
 
@@ -136,7 +148,25 @@ class DB extends Config {
   	  }
   	  
     }
-        
+    
+    // format_of  
+    if (array_key_exists("format_of", $model->validations))	{
+
+  	  foreach($model->validations["format_of"] as $pairs_to_validate) {
+  	    foreach($pairs_to_validate as $field => $regex) {
+  	      if (array_key_exists($regex, $this->defaultRegexes)) {
+  	        // pre-existing regex (defined in constructor)
+  	        $regex_to_validate = $this->defaultRegexes[$regex];
+  	      } else {
+  	        // user-submitted regex
+  	        $regex_to_validate = $regex;
+  	      }
+  	      if (!preg_match($regex_to_validate, @$params[$field]))
+	          $failures[] = "$field is not formatted correctly.";
+  	    }
+  	  }
+  	  
+    }
     return $failures;
 	}
 	
@@ -147,6 +177,13 @@ class DB extends Config {
       $this->validations["presence_of"][] = $arg;
 	  }
 	}
+	
+	function validates_format_of($field, $with) {
+    if (!isset($this->validations["format_of"]))
+      $this->validations["format_of"] = array();
+    
+	  $this->validations["format_of"][] = array($field => $with);
+	}	
 	
 	function _new() {
 	  if (!$c = $this->connect())
@@ -230,11 +267,6 @@ class DB extends Config {
 	
   function sql_insert_list($params) {
     $list = "";
-    
-    // add blank id if not exists
-    if (!array_key_exists("id", $params)) {
-      $params["id"] = "";
-    }
     
     foreach($params as $field => $value) {
       if (get_magic_quotes_gpc()) {

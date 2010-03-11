@@ -25,7 +25,7 @@ class Comments extends Controller {
 	    $this->flash_insert("success", "Comment successfully saved.");
 		  $this->redirect_to("comments_url");
 	  } else {
-	    $this->flash_insert("error", "Error saving comment.");
+	    $this->flash_insert("error", "Error saving comment:", $this->comment->errors);
 		  $this->redirect_to("comments_url");	    
 	  }
 	}	

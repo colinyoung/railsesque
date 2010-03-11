@@ -5,6 +5,6 @@ INDEX VIEW for commments.
 Listing comments:
 <ul>
 <% foreach($this->comments as $comment): %>
-  <li><%= $comment->content %></li>
+  <li><%= $comment->email %> wrote: <ul><li><%= $comment->content %></li></ul></li>
 <% endforeach; %>
 </ul>
