@@ -42,7 +42,7 @@ class View extends Template {
 	  return $form_tag . "\n" . trim($form_contents) . "\n" . "</form>";
 	}	
 	
-	function link_to($text = "", $route, $options = "") {
+	function link_to($text = "", $route, $key = "", $options = "") {
 	  if (!is_array($options))
 	    $options = array();
 	  
@@ -52,8 +52,8 @@ class View extends Template {
 	  if ($basedir !== "") {
 	    $url .= "/" . $basedir;
 	  }
-	  if (array_key_exists("key", $options)) {
-      $url .= $this->parse_route($route, $options["key"] );
+	  if ($key !== "") {
+      $url .= $this->parse_route($route, $key);
     } else {    	  
       $url .= $this->parse_route($route);
     }
@@ -62,7 +62,7 @@ class View extends Template {
       $text = $url;
     }    
     
-    $a = new ElementObject("a", $text, array("href" => $url));
+    $a = new ElementObject("a", $text, array_merge($options, array("href" => $url) ));
 	  return $a->toString();
 	}
 }

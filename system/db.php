@@ -39,8 +39,26 @@ class DB extends Config {
 			return false;
 	  
 	}
-	
-	function findByKey($table, $key) { }
+	// find by ID
+	function find($key) {
+	  if (!$c = $this->connect())
+	    return false;
+	  
+	  $result = $this->query(
+	    $this->sql(
+	      "SELECT * FROM",
+	      $this->table_name,
+	      "WHERE",
+	      $this->param_to_queryparam("id", $key)
+	    )
+	  );
+	  if (mysql_num_rows($result) == 0) {
+	    return false;
+	  }
+	  
+    $this->closeConnection();
+    return new ResultObject($this->result_to_array($result), $this->table_name);
+	}
 	
 	function findAll($where = "") {   
 	  
@@ -68,7 +86,25 @@ class DB extends Config {
 	
 	function update($table, $key, $arguments) { }	
 	
-	function delete($table, $key) { }		
+	function delete() { 
+	  if (!$c = $this->connect())
+	    return false;
+	  
+	  $r = $this->query(
+	    $this->sql(
+	      "DELETE FROM",
+	      $this->table_name,
+	      "WHERE",
+	      $this->param_to_queryparam("id", $this->id)
+	    )
+	  );
+	  
+	  if (mysql_affected_rows() > 0) {
+	    return true;
+	  } else {
+	    return false;
+	  }
+	}		
 	
 	function save() {
 	  if (!$c = $this->connect())
@@ -103,7 +139,7 @@ class DB extends Config {
     	    "INSERT INTO",
     	    $this->table_name,
     	    "(", $this->column_names_list(), ")",
-    	    "VALUES (", $this->sql_insert_list($params), ")"
+    	    "VALUES (", $this->params_to_queryparams($params), ")"
     	  )
     	);
     	if (mysql_affected_rows() == 1) {
@@ -132,9 +168,11 @@ class DB extends Config {
 	  
 	  /* Current validations:
 	    - presence_of
-	    - length_of
-	    - numericality_of
 	    - format_of
+
+	    TODO:
+	    - length_of
+	    - numericality_of	    
 	    - inclusion_of
 	  */
 	  
@@ -265,7 +303,7 @@ class DB extends Config {
     return substr($list, 0, strlen($list)-2);
 	}
 	
-  function sql_insert_list($params) {
+  function params_to_queryparams($params) {
     $list = "";
     
     foreach($params as $field => $value) {
@@ -276,5 +314,18 @@ class DB extends Config {
       }
     }
     return substr($list, 0, strlen($list)-2);
+  }
+  
+  function param_to_queryparam($column, $value) {
+    if (get_magic_quotes_gpc()) {
+      return "$column = '$value'";
+    } else {
+      return "$column = '". addslashes($value). "'";        
+    }
+  }  
+  
+  function result_to_array($mysql_result) {
+    $row = mysql_fetch_array($mysql_result, MYSQL_ASSOC);
+    return $row;
   }
 }

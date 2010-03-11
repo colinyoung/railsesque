@@ -11,8 +11,14 @@ class Comments extends Controller {
 	}
 	
 	function delete() {
-		
-	
+		$this->comment = $this->Comment->find($this->params["key"]);
+		if ($this->comment->delete()) {
+	    $this->flash_insert("success", "Comment successfully deleted.");
+		  $this->redirect_to("comments_url");
+		} else {
+		  $this->flash_insert("error", "Error deleting comment.  Comment was not deleted.");
+		  $this->redirect_to("comments_url");
+		}
 	}
 	
 	function edit() {

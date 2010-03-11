@@ -5,7 +5,13 @@ class Controller extends Template {
 	var $params;
 	
 	function __construct() {
+	  parent::__construct();
 		$this->params = array();
+		
+		// $_GET
+		$this->params["key"] = $this->key;
+		
+		// $_POST
 		foreach($_POST as $arrayKey => $array) {
 
 			foreach($_POST as $key => $req) {	

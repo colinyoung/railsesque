@@ -34,7 +34,7 @@ class Config {
 		$this->addRoute("action", "index");
 		
 		// 
-		$this->base_dir = $_SERVER['DOCUMENT_ROOT'] . $this->dir_sep . $this->base_dir;
+		$this->base_file_dir = $_SERVER['DOCUMENT_ROOT'] . $this->dir_sep . $this->base_dir;
 	}
 	
 	function addRoute($key, $value) {

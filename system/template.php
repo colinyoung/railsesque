@@ -95,12 +95,12 @@ class Template extends Config {
 	
 	function generateControllerPath() {
 		$sep = parent::get("dir_sep");
-		return parent::get("base_dir") . $sep . parent::get("controllers_dir") . $sep . $this->controller . parent::get("extension_with_dot");
+		return parent::get("base_file_dir") . $sep . parent::get("controllers_dir") . $sep . $this->controller . parent::get("extension_with_dot");
 	}
 	
 	function generateViewPath() {
 		$sep = parent::get("dir_sep");
-		return parent::get("base_dir") 
+		return parent::get("base_file_dir") 
 			.$sep 
 			.parent::get("views_dir")
 			.$sep 
@@ -114,7 +114,7 @@ class Template extends Config {
 	
 	function generateModelPath() {
 		$sep = parent::get("dir_sep");
-		return parent::get("base_dir") 
+		return parent::get("base_file_dir") 
 			.$sep 
 			.parent::get("models_dir")
 			.$sep 
@@ -240,7 +240,7 @@ class Template extends Config {
   function parse_route($route, $key="") {
 	  $controller = "";
 	  $action = "";
-	  $key = "";
+	  
 	  $parts = explode("_", $route);
 	  if (count($parts) > 2) {
 	    $action = $parts[0];
