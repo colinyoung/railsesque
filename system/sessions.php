@@ -1,6 +1,6 @@
 <?php
 
-$Sessions = new Sessions();
+
 
 class Sessions {
 	

@@ -1,12 +1,13 @@
 <?php
 
-class ResultObject {
+class ResultObject extends DB {
   
   var $name, $table_name, $used, $used_labels, $submit_button_printed;
   
   function __construct($mysql_result, $table_name = "") {
     $isResult = false;
-    $this->table_name = $table_name;
+
+	$this->table_name = $table_name;	
     $this->name = TextHelper::singularize($table_name);
     $this->used = array();
     $this->used_labels = array();
@@ -52,5 +53,5 @@ class ResultObject {
   
   function setSubmitButtonPrinted() {
     $this->submit_button_printed = true;
-  }  
+  } 
 }

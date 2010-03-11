@@ -8,7 +8,7 @@ class Template extends Config {
 	var $extra_vars = array();
 	var $view;
 	
-	function __construct() {
+	function Template() {
 		
 		// initialize superclass so that default routes get initiated
 		parent::__construct();
@@ -82,11 +82,15 @@ class Template extends Config {
 		}
 
 
-		// 1. instantiate models
-		if (!$this->initModel()) { return false; }
+		
 
-		// 2. include controller, then action
-		if (!$this->initController()) { return false; }
+		// 1. include controller
+		if (!$this->initController()) { return false; }		
+
+
+		// 2. init Action		
+		if (!$this->initAction()) { return false; }
+
 		
 		// 3. render view
 		// format is obtained from URL.
@@ -134,25 +138,39 @@ class Template extends Config {
 	  if (file_exists($this->generateViewPath())) {
 					
 			// load file into view
-			$this->view->load( $this->generateViewPath() );
 			
-			return true;
+		  $newClass = TextHelper::capitalize($this->controller);
+		  eval('$this->' . $newClass . "Controller->load( '" . $this->generateViewPath() ."' );");
+		  return true;
 		} else {
 		  Errors::throwWith404("No view was defined for that URL.");
-			return false;	
+		  return false;	
 		}
 	}
 	
-	function initModel() {
+	function initAction() {
 	  // models path
      if (file_exists($this->generateModelPath())) {
   			// include view file
   			include_once($this->generateModelPath());
   			// instantiate the class
+			$controllerClass = TextHelper::capitalize($this->controller);
   			$newClass = TextHelper::capitalize(TextHelper::singularize($this->controller));
   			// example: "Welcome::index()"
   			try {
-  			  eval('$this->' . $newClass . " = new ".$newClass. "();");
+			  // add model to ControllerClass
+  			  eval('$this->' . $controllerClass . "Controller->".$newClass ." = new ".$newClass. "();");
+			  
+			  // fire the appropriate action in the controller
+			  // php is stupid
+			  if ($this->action == "new") {
+			    $this->action = "_new";
+			  }
+  			  eval('$this->' . $controllerClass . "Controller->" . $this->action . "();");			  
+			  // change it back
+			  if ($this->action == "_new") {
+			    $this->action = "new";
+			  }
   			} catch (Exception $e) {
   			  Errors::throwWith404("Action does not exist for that URL.");
   			  return false;
@@ -165,7 +183,7 @@ class Template extends Config {
 	function initController() {
 	  if (file_exists($this->generateControllerPath())) {
 			
-			$this->view = new View();
+
 			
 			// translate model objects into local objects.
 			
@@ -180,17 +198,14 @@ class Template extends Config {
 			// example: "Welcome::index()"
 			try {
 			  
-			  // php is stupid
-			  if ($this->action == "new") {
-			    $this->action = "_new";
-			  }
 			  
-			  eval($newClass . "::" . $this->action . "();");
+			  // load controller
+  			  eval('$this->' . $newClass . "Controller = new ".$newClass. "();");	 
 			  
-			  // change it back
-			  if ($this->action == "_new") {
-			    $this->action = "new";
-			  }
+			  // instantiate view object on controller class
+  			  eval('$this->' . $newClass . "Controller->view = new View();");	 
+			
+			  
 			} catch (Exception $e) {
 			  Errors::throwWith404("Action does not exist for that URL.");
 			  return false;
@@ -207,7 +222,10 @@ class Template extends Config {
 	  if ( $this->action == "edit" ) {
 	    $action = "update";
 	  }
-	  
+	  if ($this->controller == "" ) {
+		// construct
+		$this->Template();  
+	  }
 	  // is it installed in a subdirectory?
 	  $test = substr($_SERVER['REQUEST_URI'], 1, strpos($_SERVER['REQUEST_URI'], "/", 1)-1);
 	  if ($test !== $this->controller) {

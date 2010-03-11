@@ -32,8 +32,8 @@ class View extends Template {
 	}
 	
 	function endForm() {
-    $target = parent::formURL($this->ob->table_name);
-	  $form_tag = new ElementObject("form", NULL, array("method" => "post", "action" => $target));
+    $target = $this->formURL($this->ob->table_name);
+	$form_tag = new ElementObject("form", NULL, array("method" => "post", "action" => $target));
     $form_tag = str_replace("</form>", "", $form_tag->toString());
 
 	  $form_contents = str_replace("  ", "", ob_get_contents());

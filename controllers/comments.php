@@ -2,8 +2,8 @@
 class Comments extends Controller {
 	
 	function index() {
-	  $this->view->hello = "hi";
-	  $this->view->comments = $this->Comment->findAll();
+	  $this->hello = "hi";
+	  $this->comments = $this->Comment->findAll();
 	}
 	
 	function show() {
@@ -19,7 +19,16 @@ class Comments extends Controller {
 		
 	}
 	
+	function create() {
+	  $this->comment = $this->Comment->_new($this->params["comment"]);
+	  if ($this->comment->save()) {
+		print "Comment successfully saved.";
+	  } else {
+		print "Comment did not pass validation.";  
+	  }
+	}	
+	
 	function _new() {
-	  $this->view->comment = $this->Comment->_new(); 
+	  $this->comment = $this->Comment->_new(); 
 	}
 }

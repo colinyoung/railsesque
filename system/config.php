@@ -1,27 +1,31 @@
 <?php
 class Config {
 	
-	var $host = "";
-	var $username = "";
-	var $password = "";
-	var $database = "";
+	private $host = "localhost";
+	private $username = "root";
+	private $password = "";
+	private $database = "railsesque";
 
 	var $routes = array();
 	
 	// "constants"
-	var $environment = "development";	
-	var $base_dir = "";
-	var $dir_sep = "/";
-	var $extension_with_dot = ".php";
-	var $controllers_dir = "controllers";
-	var $views_dir = "views";
-	var $models_dir = "models";	
-	var $default_format = "html";
+	private $environment = "development";	
+	private $base_dir = "";
+	private $dir_sep = "/";
+	private $extension_with_dot = ".php";
+	private $controllers_dir = "controllers";
+	private $views_dir = "views";
+	private $models_dir = "models";	
+	private $default_format = "html";
 	
 	function __construct() {
 		
 		error_reporting(E_ALL);
 		
+		if ($this->host == "" || $this->database == "") {
+			print "your database is not added.";
+			die();
+		}
 		// set default routes here
 		$this->addRoute("controller", "comments");
 		$this->addRoute("action", "index");
