@@ -11,20 +11,23 @@ class DB extends Config {
 	private $connection;
 	
 	function DB() {
+	  parent::__construct();
     $this->db_host = parent::get('host');
     $this->db_username = parent::get('username');
     $this->db_password = parent::get('password'); 
-    $this->db_database = parent::get('database');       
+    $this->db_database = parent::get('database');
     if ($this->table_name == "") {
     	$this->table_name = strtolower(TextHelper::pluralize(get_class($this)));
 	  }
-	  $this->constructed = true;
+
 	  $this->validations = array();
 	  
 	  // extend the preset regexes (for validates_format_of) here.
 	  $this->defaultRegexes = array(
 	    ":email" => '/^[^\W][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$/'
 	  );
+	  
+	  $this->constructed = true;	  
 	}
 	
 	function connect() {
@@ -33,11 +36,12 @@ class DB extends Config {
 	  }
 		$this->connection = mysql_connect($this->db_host, $this->db_username, $this->db_password);
 		$this->connection = mysql_select_db($this->db_database, $this->connection);
-		if ($this->connection)
+		if ($this->connection) {
 			return $this->connection;
-		else
+		} else {
+		  print "Error connecting to database: " . mysql_error();
 			return false;
-	  
+	  }
 	}
 	// find by ID
 	function find($key) {
@@ -61,7 +65,6 @@ class DB extends Config {
 	}
 	
 	function findAll($where = "") {   
-	  
 	  // connect to DB
 	  if (!$c = $this->connect())
 	    return false;
@@ -73,7 +76,6 @@ class DB extends Config {
 	      $this->table_name
 	    )
 	  );
-	  
 	  $this->closeConnection();
 	  return $this->toResultObjects($result);
 	}	
@@ -112,6 +114,7 @@ class DB extends Config {
 	  
 	  $columnNames = $this->columnNames();
 	  $params = array();
+	  
 	  while ($row = mysql_fetch_array($columnNames, MYSQL_ASSOC)) {
 	    
 	    // insert defaults (timestamps)
@@ -128,11 +131,11 @@ class DB extends Config {
           $params[$row["Field"]] = $this->$row["Field"]; 
         }
 		  }
-
 		  
     }
 	  // validate (returns array of failures if failed.)	  
 	  $failures = $this->validate($params);
+	  
 	  if (count($failures) == 0) {
       $this->query(
     	  $sql = $this->sql(
@@ -147,6 +150,7 @@ class DB extends Config {
       	return true;    	  
     	} else {
     	  $this->errors = array(mysql_error(), "query was:" . $sql);
+  	    $this->closeConnection();    	  
     	  return false;
     	}
     	
@@ -155,7 +159,6 @@ class DB extends Config {
 	    $this->errors = $failures;
 	    return false;	    
 	  }
-	  // does it have an ID? If so, do an update action.
 	}
 	
 	function validateOnCreate($table, $arguments) { }

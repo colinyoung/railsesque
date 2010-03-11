@@ -2,8 +2,8 @@
 class Comments extends Controller {
 	
 	function index() {
-	  $this->hello = "hi";
-	  $this->comments = $this->Comment->findAll();
+	  // set a local variable like this:
+	  $this->comments = $this->Comment->findAll();	  
 	}
 	
 	function show() {
