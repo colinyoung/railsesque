@@ -2,21 +2,24 @@
 class Config {
 	
 	private $host = "localhost";
-	private $username = "root";
-	private $password = "";
+	private $username = "railsesque";
+	private $password = "railsesque";
 	private $database = "railsesque";
 
 	var $routes = array();
 	
 	// "constants"
 	private $environment = "development";	
-	private $base_dir = "";
+	private $base_dir = "railsesque";
 	private $dir_sep = "/";
-	private $extension_with_dot = ".php";
+	private $default_format = "html";	
+	
+	// okay, you're done configuring
+	private $extension_with_dot = ".php";	
 	private $controllers_dir = "controllers";
 	private $views_dir = "views";
 	private $models_dir = "models";	
-	private $default_format = "html";
+
 	
 	function __construct() {
 		

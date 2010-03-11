@@ -12,7 +12,6 @@ class Template extends Config {
 		
 		// initialize superclass so that default routes get initiated
 		parent::__construct();
-		
 		$i = 0;
 		if (isset($_GET['request'])) {
 			foreach (explode("/", $_GET['request']) as $url_part) {
@@ -34,7 +33,7 @@ class Template extends Config {
 			}
 			
 			// set default format
-			$this->format = parent::get("default_format");
+			$this->format = parent::get("default_format");			
 			// check for other formats to return
 			if ($this->key == "" && strpos($this->action, ".") > -1) {
 			  
@@ -80,9 +79,6 @@ class Template extends Config {
 			print $string;
 			return true;
 		}
-
-
-		
 
 		// 1. include controller
 		if (!$this->initController()) { return false; }		
@@ -151,26 +147,31 @@ class Template extends Config {
 	function initAction() {
 	  // models path
      if (file_exists($this->generateModelPath())) {
+  			
   			// include view file
   			include_once($this->generateModelPath());
+  			
   			// instantiate the class
-			$controllerClass = TextHelper::capitalize($this->controller);
+			  $controllerClass = TextHelper::capitalize($this->controller);
   			$newClass = TextHelper::capitalize(TextHelper::singularize($this->controller));
   			// example: "Welcome::index()"
+  			
   			try {
-			  // add model to ControllerClass
-  			  eval('$this->' . $controllerClass . "Controller->".$newClass ." = new ".$newClass. "();");
+			    // add model to ControllerClass
+    			eval('$this->' . $controllerClass . "Controller->".$newClass ." = new ".$newClass. "();");
 			  
-			  // fire the appropriate action in the controller
-			  // php is stupid
-			  if ($this->action == "new") {
-			    $this->action = "_new";
-			  }
-  			  eval('$this->' . $controllerClass . "Controller->" . $this->action . "();");			  
-			  // change it back
-			  if ($this->action == "_new") {
-			    $this->action = "new";
-			  }
+  			  // fire the appropriate action in the controller
+  			  // php is stupid
+  			  if ($this->action == "new") {
+  			    $this->action = "_new";
+  			  }
+			  
+    			eval('$this->' . $controllerClass . "Controller->" . $this->action . "();");			  
+  			
+  			  // change it back
+  			  if ($this->action == "_new") {
+  			    $this->action = "new";
+  			  }
   			} catch (Exception $e) {
   			  Errors::throwWith404("Action does not exist for that URL.");
   			  return false;
@@ -182,8 +183,6 @@ class Template extends Config {
 	
 	function initController() {
 	  if (file_exists($this->generateControllerPath())) {
-			
-
 			
 			// translate model objects into local objects.
 			
@@ -216,7 +215,11 @@ class Template extends Config {
 			return false;
 		}
 	}
+	function getConfig($property) {
+	  return parent::get($property);
+	}
 	
+	/// MOVE INTO VIEW.php
 	function formURL($table_name) {
 	  $action = "create";
 	  if ( $this->action == "edit" ) {
@@ -233,4 +236,23 @@ class Template extends Config {
 	  }
     return "/" . $table_name . "/" . $action;
 	}
+	
+  function parse_route($route, $key="") {
+	  $controller = "";
+	  $action = "";
+	  $key = "";
+	  $parts = explode("_", $route);
+	  if (count($parts) > 2) {
+	    $action = $parts[0];
+	    $controller = TextHelper::pluralize($parts[1]);
+	  } else {
+	    $action = "index";
+	    $controller = TextHelper::pluralize($parts[0]);
+	  }
+	  if ($key !== "") {
+	    return "/$controller/$action/$key";
+	  } else {
+	  return "/$controller/$action";
+    }
+	}	
 }

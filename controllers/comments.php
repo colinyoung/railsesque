@@ -22,9 +22,11 @@ class Comments extends Controller {
 	function create() {
 	  $this->comment = $this->Comment->_new($this->params["comment"]);
 	  if ($this->comment->save()) {
-		print "Comment successfully saved.";
+	    $this->flash_insert("success", "Comment successfully saved.");
+		  $this->redirect_to("comments_url");
 	  } else {
-		print "Comment did not pass validation.";  
+	    $this->flash_insert("error", "Error saving comment.");
+		  $this->redirect_to("comments_url");	    
 	  }
 	}	
 	

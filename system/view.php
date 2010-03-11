@@ -41,4 +41,28 @@ class View extends Template {
 	  ob_end_clean();
 	  return $form_tag . "\n" . trim($form_contents) . "\n" . "</form>";
 	}	
+	
+	function link_to($text = "", $route, $options = "") {
+	  if (!is_array($options))
+	    $options = array();
+	  
+	  $url = "";
+	  $basedir = $this->getConfig("base_dir");
+	  
+	  if ($basedir !== "") {
+	    $url .= "/" . $basedir;
+	  }
+	  if (array_key_exists("key", $options)) {
+      $url .= $this->parse_route($route, $options["key"] );
+    } else {    	  
+      $url .= $this->parse_route($route);
+    }
+    
+    if ($text == "") {
+      $text = $url;
+    }    
+    
+    $a = new ElementObject("a", $text, array("href" => $url));
+	  return $a->toString();
+	}
 }
