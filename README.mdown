@@ -1,11 +1,13 @@
-This is railsesque (and it is railesque!)
------------------------------------------
+![Railsesque logo](http://github.com/colinyoung/railsesque/raw/master/public/images/railsesque.png "Railsesque logo")
 
-- What is it?
-  - A simple, easy, 30KB, full!, railsesque PHP framework.
+This is railsesque.
+-------------------
+
+What is it?
+  - A simple, easy, less than 200KB, full!, railsesque PHP framework.
   - Includes niceties like ORM and form builders.
   - Even a script/generate interface (in a later release)
   - Does not include billions of files
   - Downloadable hiphop-php version that is FASSSTT
   - Standard, easy, you-already-know-it MVC
-  - Rails-inspired (_read:_ stolen directly from) method names.
+  - Rails-inspired (_read:_ stolen directly from rails) method names.
