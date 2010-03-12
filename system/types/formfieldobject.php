@@ -12,7 +12,7 @@ class FormFieldObject extends ResultObject {
     // labels do not setUsed, they setUsedLabel
     if (!$this->obj->usedLabel($field)) {
       // label object
-      $label = new ElementObject("label", Inflector::humanize($field), array("name" => "{$this->obj->name}[$field]"));
+      $label = new ElementObject("label", Inflector::humanize($field), array("name" => "{$this->obj->singular_table_name}[$field]"));
       
       
       // this is an array of used labels in the parent class.
@@ -33,7 +33,7 @@ class FormFieldObject extends ResultObject {
       // object
       $element = new ElementObject("input", NULL,
         array(
-            "name" => "{$this->obj->name}[$field]",
+            "name" => "{$this->obj->singular_table_name}[$field]",
             "type" => "text"
         )
       );
@@ -50,7 +50,7 @@ class FormFieldObject extends ResultObject {
   
   function text_area($field, $options = array() ) {
     $default_options = array(
-        "name" => "{$this->obj->name}[$field]",
+        "name" => "{$this->obj->singular_table_name}[$field]",
         "rows" => "7",
         "cols" => "40"
     );
@@ -68,7 +68,7 @@ class FormFieldObject extends ResultObject {
   
   function checkbox($field, $options = array() ) {
     $default_options = array(
-        "name" => "{$this->obj->name}[$this->field]",
+        "name" => "{$this->obj->singular_table_name}[$this->field]",
         "type" => "checkbox"
     );
     if (!$this->obj->used($field)) {
@@ -112,7 +112,7 @@ class FormFieldObject extends ResultObject {
       // label object
       $innerHTML = $formFieldObject->html;
       
-      $label = new ElementObject("label", Inflector::humanize($formFieldObject->field_name) . "<br />" . $innerHTML, array("for" => "{$this->obj->name}-{$formFieldObject->field_name}"));
+      $label = new ElementObject("label", Inflector::humanize($formFieldObject->field_name) . "<br />" . $innerHTML, array("for" => "{$this->obj->singular_table_name}-{$formFieldObject->field_name}"));
       
       $this->usedWrap = true;
       

@@ -6,9 +6,8 @@ class ResultObject extends DB {
   
   function __construct($mysql_result, $table_name = "") {
     $isResult = false;
-
-	$this->table_name = $table_name;	
-    $this->name = TextHelper::singularize($table_name);
+	  $this->table_name = $table_name;	
+    $this->singular_table_name = TextHelper::singularize($table_name);
     $this->used = array();
     $this->used_labels = array();
     $this->submit_button_printed = false;

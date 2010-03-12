@@ -1,7 +1,5 @@
 <?php
-
-
-
+$Sessions = new Session();
 class Sessions {
 	
 	function __construct() {
