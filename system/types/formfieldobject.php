@@ -10,9 +10,16 @@ class FormFieldObject extends ResultObject {
   
   function label($field, $paragraph = false) {
     // labels do not setUsed, they setUsedLabel
+    
+    // this is optional extra text the user can add.
+    $extra_text = "";
+    if (is_string($paragraph)) {
+      $extra_text .= "<span class=\"quiet\">$paragraph</span>";
+    }
+    
     if (!$this->obj->usedLabel($field)) {
       // label object
-      $label = new ElementObject("label", Inflector::humanize($field), array("name" => "{$this->obj->singular_table_name}[$field]"));
+      $label = new ElementObject("label", Inflector::humanize($field) . $extra_text, array("for" => "{$this->obj->singular_table_name}-$field"));
       
       
       // this is an array of used labels in the parent class.
