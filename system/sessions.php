@@ -1,8 +1,5 @@
 <?php
-<<<<<<< HEAD
 $Sessions = new Session();
-=======
-$Sessions = new Sessions();
 
 /* 
 Sample flash code perfect 
@@ -24,7 +21,6 @@ if (array_key_exists("flash", $_SESSION)) {
 
 ------SNIP------
 */
->>>>>>> d760b83e4fad6e955ac08a56c2381b8c3844dd16
 class Sessions {
 	
 	function __construct() {
