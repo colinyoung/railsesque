@@ -1,9 +1,10 @@
-![Railsesque logo](http://github.com/colinyoung/railsesque/raw/master/public/images/railsesque.png "Railsesque logo")
+![Railsesque logo](http://thatapp.net/images/railsesque.png "Railsesque logo")
 
 This is railsesque.
 -------------------
 
 What is it?
+
 * A simple, easy, less than 200KB, full!, railsesque PHP framework.
 * Includes niceties like ORM and form builders.
 * Even a script/generate interface (in a later release)
