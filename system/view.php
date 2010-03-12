@@ -130,4 +130,32 @@ class View extends Template {
 	  }
 	  return $script_elements;
 	}	
+	
+  function date_format($mysql_datetime_string, $format = "") {
+	  $date = explode("-", substr($mysql_datetime_string, 0, 10));
+	  $time = explode(":", substr($mysql_datetime_string, 11));
+	  // hour, minute, second, month, day, year
+	  $ts = mktime(
+	    $time[0], $time[1], $time[2],
+	    $date[1], $date[2], $date[0]
+	  );
+	  if ($format == "") {
+	    $format = 'F j, Y \a\t g:i a';
+	  }
+	  return date($format, $ts);
+	}
+	
+	function time_ago_in_words($mysql_datetime_or_timestamp) {
+	  $format = 'D, d M Y H:i:s O'; // http://php.net/manual/en/class.datetime.php
+	  
+	  // convert if not numeric, our vendor class requires a TS
+    if (!is_numeric($mysql_datetime_or_timestamp)) {
+      $dt = $mysql_datetime_or_timestamp;
+	    $time_ago = new TimeAgo($this->date_format($dt, $format));      
+      return $time_ago->inWords();
+    } else {
+	    $time_ago = new TimeAgo( date($format, $mysql_datetime_or_timestamp) );
+      return $time_ago->inWords();
+    }
+	}		
 }

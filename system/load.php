@@ -25,3 +25,4 @@ require_once 'view.php';
 
 // other vendors
 require_once 'vendors/akelos_php_inflector.php';
+require_once 'vendors/php-time-ago.php';
