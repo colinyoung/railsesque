@@ -1,5 +1,5 @@
 <?php
-$Sessions = new Session();
+$Sessions = new Sessions();
 
 /* 
 Sample flash code perfect 
