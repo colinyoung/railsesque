@@ -14,7 +14,7 @@ class FormFieldObject extends ResultObject {
     // this is optional extra text the user can add.
     $extra_text = "";
     if (is_string($paragraph)) {
-      $extra_text .= "<span class=\"quiet\">$paragraph</span>";
+      $extra_text .= " <span class=\"quiet\">$paragraph</span>";
     }
     
     if (!$this->obj->usedLabel($field)) {
