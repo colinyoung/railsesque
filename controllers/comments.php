@@ -2,8 +2,8 @@
 class Comments extends Controller {
 	
 	function index() {
-	  $this->hello = "hi";
-	  $this->comments = $this->Comment->findAll();
+	  // set a local variable like this:
+	  $this->comments = $this->Comment->findAll();	  
 	}
 	
 	function show() {
@@ -11,8 +11,14 @@ class Comments extends Controller {
 	}
 	
 	function delete() {
-		
-	
+		$this->comment = $this->Comment->find($this->params["key"]);
+		if ($this->comment->delete()) {
+	    $this->flash_insert("success", "Comment successfully deleted.");
+		  $this->redirect_to("comments_url");
+		} else {
+		  $this->flash_insert("error", "Error deleting comment.  Comment was not deleted.");
+		  $this->redirect_to("comments_url");
+		}
 	}
 	
 	function edit() {
@@ -22,9 +28,11 @@ class Comments extends Controller {
 	function create() {
 	  $this->comment = $this->Comment->_new($this->params["comment"]);
 	  if ($this->comment->save()) {
-		print "Comment successfully saved.";
+	    $this->flash_insert("success", "Comment successfully saved.");
+		  $this->redirect_to("comments_url");
 	  } else {
-		print "Comment did not pass validation.";  
+	    $this->flash_insert("error", "Error saving comment:", $this->comment->errors);
+		  $this->redirect_to("comments_url");	    
 	  }
 	}	
 	

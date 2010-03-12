@@ -1,4 +1,4 @@
-<p><a href="/comments">Back to listing all comments</a></p>
+<p><%= $this->view->link_to("Back to listing all comments", "comments_url") %></p>
 
 
 <h3>New Comment</h3>

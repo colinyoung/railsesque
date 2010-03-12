@@ -41,4 +41,93 @@ class View extends Template {
 	  ob_end_clean();
 	  return $form_tag . "\n" . trim($form_contents) . "\n" . "</form>";
 	}	
+	
+	function link_to($text = "", $route, $key = "", $options = "") {
+	  if (!is_array($options))
+	    $options = array();
+	  
+	  $url = "";
+	  $basedir = $this->getConfig("base_dir");
+	  
+	  if ($basedir !== "") {
+	    $url .= "/" . $basedir;
+	  }
+	  if ($key !== "") {
+      $url .= $this->parse_route($route, $key);
+    } else {    	  
+      $url .= $this->parse_route($route);
+    }
+    
+    if ($text == "") {
+      $text = $url;
+    }    
+    
+    $a = new ElementObject("a", $text, array_merge($options, array("href" => $url) ));
+	  return $a->toString();
+	}
+	
+	function content_for($item, $content) {
+	  $this->$item = $content;
+	}
+	
+	function yield($item = "content") {
+	  if (isset($this->$item))
+	    return $this->$item;
+	  else
+	    return false;
+	}
+	
+	
+	// please don't look at these
+	function stylesheet_link_tag($item = ":all") {
+    $link_elements = "";	  
+	  if ($item == "" || $item == ":all") {
+	    $sep = parent::get('dir_sep');
+	    $styles_dir = parent::get('stylesheets_dir');
+	    $files = scandir($styles_dir);
+	    foreach($files as $file) {
+	      $ext = substr($file, strrpos($file, "."));
+	      if ($ext == ".css") {
+    	    $link_element = new ElementObject("link", NULL, array(
+    	      "href" => "/" . parent::get("base_dir") . "/" . parent::get("stylesheets_dir") . "/" . $file,
+    	      "rel" => "stylesheet"
+    	    ));
+	        $link_elements .= $link_element->toString() . "\n";
+	      }
+	    }
+	  } else {
+	    if (!strpos($item, ".css")) {
+	      $item .= ".css";
+	    }
+	    $link_element = new ElementObject("link", NULL, array(
+	      "href" => "/" . parent::get("base_dir") . "/" . parent::get("stylesheets_dir") . "/" . $item,
+	      "rel" => "stylesheet"
+	    ));
+      $link_elements .= $link_element->toString() . "\n";
+	  }
+	  return $link_elements;
+	}
+	
+	function javascript_include_tag($item = ":all") {
+    $script_elements = "";
+	  if ($item == "" || $item == ":all") {
+	    $sep = parent::get('dir_sep');
+	    $styles_dir = parent::get('javascripts_dir');
+	    $files = scandir($styles_dir);
+	    foreach($files as $file) {
+	      $ext = substr($file, strrpos($file, "."));
+	      if ($ext == ".js") {
+	        $script_element = new ElementObject("script", NULL, array("src" => "/" . parent::get("base_dir") . "/" . parent::get("javascripts_dir") . "/" . $file));
+	        $script_elements .= $script_element->toString() . "\n";
+	      }
+	    }
+	  } else {
+	    if (!strpos($item, ".js")) {
+	      $item .= ".js";
+	    }
+	    $script_element = new ElementObject("script", NULL, array("src" => "/" . parent::get("base_dir") . "/" . parent::get("javascripts_dir") . "/" . $item));
+      $script_elements .= $script_element->toString() . "\n";
+	  }
+	  return $script_elements;
+	}	
 }

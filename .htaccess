@@ -1,5 +1,8 @@
+# Uncomment if you can't do this
+php_flag asp_tags On
+
+# RewriteEngine
 RewriteEngine On
-RewriteBase /
+RewriteCond %{REQUEST_URI} !^.*/(files|images|javascripts|miscellaneous|stylesheets|robots.txt|sitemap.xml)($|/.*$) [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule (.*) /index.php?request=$1 [L]
+RewriteRule (.*) index.php?request=$1 [L]

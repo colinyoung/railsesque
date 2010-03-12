@@ -1,0 +1,8 @@
+# MySQL only right now
+
+development:
+  host: localhost
+  username: railsesque
+  password: railsesque
+  database: railsesque
+  

@@ -1,0 +1,15 @@
+/* override defaults here */
+html {
+  background: #fff;
+  font: 11pt/13pt helvetica, arial, sans-serif;
+  color: #333;
+}
+a:link, a:visited {
+  color: black;
+  font-weight: bold;
+  text-decoration: underline;
+}
+a:hover, a:active {
+  color: white;
+  background: black;
+}
