@@ -41,7 +41,8 @@ class FormFieldObject extends ResultObject {
       $element = new ElementObject("input", NULL,
         array(
             "name" => "{$this->obj->singular_table_name}[$field]",
-            "type" => "text"
+            "type" => "text",
+            "class" => "form-textfield"
         )
       );
       
@@ -59,7 +60,8 @@ class FormFieldObject extends ResultObject {
     $default_options = array(
         "name" => "{$this->obj->singular_table_name}[$field]",
         "rows" => "7",
-        "cols" => "40"
+        "cols" => "40",
+        "class" => "form-textarea"
     );
     if (!$this->obj->used($field)) {
       $element = new ElementObject("textarea", "",
@@ -76,7 +78,8 @@ class FormFieldObject extends ResultObject {
   function checkbox($field, $options = array() ) {
     $default_options = array(
         "name" => "{$this->obj->singular_table_name}[$this->field]",
-        "type" => "checkbox"
+        "type" => "checkbox",
+        "class" => "form-checkbox"
     );
     if (!$this->obj->used($field)) {
       $element = new ElementObject("input", "",
@@ -93,7 +96,8 @@ class FormFieldObject extends ResultObject {
   function submit($text = "Save changes", $paragraph = true, $options = array() ) {
     $default_options = array(
         "type" => "submit",
-        "value" => $text
+        "value" => $text,
+        "class" => "form-submit"
     );
     if (!$this->obj->submit_button_printed) {
       $element = new ElementObject("input", NULL,
