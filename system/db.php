@@ -5,10 +5,10 @@ class DB extends Config {
 	var $table_name = "";
 	var $constructed = false;
 	var $validations;
-  private $db_host = "";
-  private $db_username = "";	
-  private $db_password = "";
-  private $connection;
+	private $db_host = "";
+	private $db_username = "";	
+	private $db_password = "";
+	private $connection;
 	
 	function DB() {
 	  parent::__construct();
@@ -133,6 +133,10 @@ class DB extends Config {
 		  }
 		  
     }
+    // filter input (remove HTML, etc).
+    $params = $this->filter_html($params);
+    // later we need to be able to whitelist these.
+    
 	  // validate (returns array of failures if failed.)	  
 	  $failures = $this->validate($params);
 	  
@@ -335,5 +339,12 @@ class DB extends Config {
   function result_to_array($mysql_result) {
     $row = mysql_fetch_array($mysql_result, MYSQL_ASSOC);
     return $row;
+  }
+  
+  function filter_html($array) {
+    foreach($array as $key => $value) {
+      $array[$key] = strip_tags($value);
+    }
+    return $array;
   }
 }
