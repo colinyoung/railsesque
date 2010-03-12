@@ -5,10 +5,10 @@ class DB extends Config {
 	var $table_name = "";
 	var $constructed = false;
 	var $validations;
-	private $db_host = "";
-	private $db_username = "";	
-	private $db_password = "";
-	private $connection;
+  private $db_host = "";
+  private $db_username = "";	
+  private $db_password = "";
+  private $connection;
 	
 	function DB() {
 	  parent::__construct();
@@ -141,7 +141,7 @@ class DB extends Config {
     	  $sql = $this->sql(
     	    "INSERT INTO",
     	    $this->table_name,
-    	    "(", $this->column_names_list(), ")",
+    	    "(", $this->column_names_list($params), ")",
     	    "VALUES (", $this->params_to_queryparams($params), ")"
     	  )
     	);
@@ -166,7 +166,7 @@ class DB extends Config {
 	function validateOnUpdate($table, $arguments) { }	
 	
 	function validate($params) { 
-	  $model = new $this->name();
+	  $model = new $this->singular_table_name();
 	  $failures = array();
 	  
 	  /* Current validations:
@@ -294,11 +294,16 @@ class DB extends Config {
 	  );
 	  return $result;
 	}
-	function column_names_list() {
+	function column_names_list($params) {
 	  $list = "";
 	  $columnNames = $this->columnNames();
 	  while ($row = mysql_fetch_array($columnNames, MYSQL_ASSOC)) {
 	    if ($this->is_new() && $row["Field"] == "id") {
+	      continue;
+	    }
+	    
+	    // continue if it's not defined in params
+	    if (!array_key_exists($row["Field"], $params)) {
 	      continue;
 	    }
 	    $list .= $row["Field"]. ", ";
