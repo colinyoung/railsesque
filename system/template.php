@@ -112,6 +112,34 @@ class Template extends Config {
 			.parent::get("extension_with_dot");
 	}
 	
+	function generateLayoutPath() {
+		$sep = parent::get("dir_sep");
+		$controller_specific = parent::get("base_file_dir") 
+			.$sep 
+			.parent::get("views_dir")
+			.$sep
+			."layouts"
+			.$sep			
+			.$this->controller
+			."."
+			.$this->format
+			.parent::get("extension_with_dot");
+		if (file_exists($controller_specific)) {
+		  return $controller_specific;
+		} else {
+		  return parent::get("base_file_dir") 
+  			.$sep 
+  			.parent::get("views_dir")
+  			.$sep
+  			."layouts"
+  			.$sep			
+  			."application"
+  			."."
+  			.$this->format
+  			.parent::get("extension_with_dot");
+		}
+	}	
+	
 	function generateModelPath() {
 		$sep = parent::get("dir_sep");
 		return parent::get("base_file_dir") 
@@ -132,11 +160,14 @@ class Template extends Config {
 	
 	function renderView() {
 	  if (file_exists($this->generateViewPath())) {
-					
-			// load file into view
-			
-		  $newClass = TextHelper::capitalize($this->controller);
-		  eval('$this->' . $newClass . "Controller->load( '" . $this->generateViewPath() ."' );");
+	    
+		  $newClass = TextHelper::capitalize($this->controller);					
+			// load file into view		  
+		  eval('$this->' . $newClass . "Controller->content_for_layout( '" . $this->generateViewPath() ."' );");		  
+		  
+			// load file into template
+			eval('$this->' . $newClass . "Controller->load( '" . $this->generateLayoutPath() ."' );");
+
 		  return true;
 		} else {
 		  Errors::throwWith404("No view was defined for that URL.");

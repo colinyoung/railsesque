@@ -16,7 +16,9 @@ class Config {
 	private $controllers_dir = "controllers";
 	private $views_dir = "views";
 	private $models_dir = "models";	
-	private $config_dir = "config";		
+	private $config_dir = "config";
+	private $stylesheets_dir = "public/stylesheets";
+	private $javascripts_dir = "public/javascripts";
 
 	
 	function __construct() {

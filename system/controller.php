@@ -25,18 +25,26 @@ class Controller extends Template {
 		}
 	}
 	
-	function load($path) {
-	  require_once($path);
+	function load($view_file_path) {
+	  require_once($view_file_path);
 	}
 	
+	function content_for_layout($view_file_path) {
+	  ob_start();
+	  require_once($view_file_path);
+	  $this->view->content_for("content", ob_get_contents());
+	  ob_end_clean();
+	}	
+	
 	function flash_insert($type, $message, $array = "") {
-	  $_SESSION["flash"] = "$type: $message";
+	  $_SESSION["flash"]["type"] = $type;
+	  $_SESSION["flash"]["message"] = "<p>" . $message . "</p>";
 	  if (is_array($array)) {
-	    $_SESSION["flash"] .= "<ul class=\"list $type\">";
+	    $_SESSION["flash"]["message"] .= "<ul class=\"list $type\">";
 	    foreach($array as $message) {
-	      $_SESSION["flash"] .= "<li>$message</li>";
+	      $_SESSION["flash"]["message"] .= "<li>$message</li>";
 	    }
-	    $_SESSION["flash"] .= "</ul>";
+	    $_SESSION["flash"]["message"] .= "</ul>";
 	  }
 	}
 	
@@ -46,5 +54,5 @@ class Controller extends Template {
 	    $base_dir .= parent::get("base_dir");
 	  }
 	  header("Location: http://" . $_SERVER['HTTP_HOST'] . $base_dir . $this->parse_route($route));
-	}	
+	}
 } 

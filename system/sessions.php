@@ -1,9 +1,26 @@
 <?php
 $Sessions = new Sessions();
+
+/* 
+Sample flash code perfect 
+for copying into your layouts 
+
+------SNIP------
+
+<?php
 if (array_key_exists("flash", $_SESSION)) {
-  print $_SESSION['flash'];
-  $_SESSION['flash'] = "";
+  ?>
+  <div class="flash <?php echo $_SESSION['flash']['type']; ?>">
+    <?php echo $_SESSION['flash']['message']; ?>
+  </div>
+  <?php
+  // clear after printing
+  unset($_SESSION["flash"]);
 }
+?>
+
+------SNIP------
+*/
 class Sessions {
 	
 	function __construct() {
