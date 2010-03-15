@@ -344,6 +344,8 @@ class DB extends Config {
   function filter_html($array) {
     foreach($array as $key => $value) {
       $array[$key] = strip_tags($value);
+	  $value = nl2br($value);
+	  $array[$key] = preg_replace("/\\r\\n/", "", $value);
     }
     return $array;
   }
